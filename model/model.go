@@ -24,7 +24,7 @@ type Task struct {
 
 type Todo struct {
 	Id        uuid.UUID
-	Owner     uuid.UUID // reference to user id
+	Owner     uuid.UUID // reference to user.sql id
 	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
