@@ -14,7 +14,8 @@ type Config struct {
 type authedHandler func(http.ResponseWriter, *http.Request, database.User)
 
 func (config *Config) HomePage(writer http.ResponseWriter, request *http.Request, user database.User) {
-	writer.Write([]byte("welcome to home page"))
+	todos, _ := config.DB.FindByUser(request.Context(), user.ID)
+	utils.RenderTemplate(writer, todos, "template/home.html")
 }
 
 func (config *Config) PostLogin() http.HandlerFunc {

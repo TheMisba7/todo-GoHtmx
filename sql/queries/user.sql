@@ -7,3 +7,6 @@ SELECT * FROM users where username = $1;
 
 -- name: GetUserById :one
 SELECT * FROM users where id = $1;
+
+-- name: DeleteUser :exec
+delete from users where id = $1;

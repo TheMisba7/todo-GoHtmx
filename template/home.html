@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home | TO DO</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+</head>
+<body>
+
+<div id="container" style="text-align: center">
+    <h4>Your TO DO List</h4>
+    <a href="#" hx-get="/todo/new" hx-target="#container">Add New TODO</a>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .}}
+        <tr>
+            <td>{{.Name.String}}</td>
+            <td>
+                <a
+                    href="#"
+                    hx-replace-url="true"
+                    hx-get="/todo/{{.ID}}"
+                    hx-target="#container">Details
+                </a>
+
+                | Delete</td>
+        </tr>
+        {{end}}
+        </tbody>
+
+
+    </table>
+</div>
+
+</body>
+</html>

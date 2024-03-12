@@ -1,0 +1,32 @@
+<div id="todoDetails">
+    <h4>{{.Name}}</h4>
+    <form hx-post="/task" hx-target="#todoDetails">
+        <label>
+            <input name="taskName" type="text">
+            <input name="todoId" type="text" hidden="hidden" value="{{.Id}}">
+        </label>
+        <label>
+            <input name="submit" value="add task" type="submit">
+        </label>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Created At</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .Tasks}}
+        <tr>
+            <td>{{.Name}}</td>
+            <td>{{.CreatedAt}}</td>
+            <td>{{.Status}}</td>
+            <td>change status | Delete</td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>

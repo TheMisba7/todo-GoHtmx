@@ -5,3 +5,9 @@ RETURNING *;
 
 -- name: GetTasks :many
 SELECT * FROM task where todo_id = $1;
+
+-- name: GetTaskById :one
+SELECT * FROM task where id = $1;
+
+-- name: DeleteTask :exec
+delete from task where id = $1;

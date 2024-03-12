@@ -44,6 +44,14 @@ func main() {
 	mainRouter.Get("/register", func(writer http.ResponseWriter, request *http.Request) {
 		utils.RenderTemplate(writer, nil, "template/register.html")
 	})
+
+	mainRouter.Get("/todo/new", func(writer http.ResponseWriter, request *http.Request) {
+		utils.RenderTemplate(writer, nil, "template/create-todo.html")
+	})
+	mainRouter.Post("/todo", config.Middleware(config.CreateTODO))
+	mainRouter.Get("/todo/{todoId}", config.Middleware(config.GetTODO))
+
+	mainRouter.Post("/task", config.Middleware(config.CreateTask))
 	server := http.Server{
 		Handler: mainRouter,
 		Addr:    fmt.Sprintf(":%v", port),

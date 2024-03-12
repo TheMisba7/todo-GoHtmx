@@ -45,11 +45,20 @@ func (q *Queries) CreateTodo(ctx context.Context, arg CreateTodoParams) (Todo, e
 	return i, err
 }
 
-const findByUser = `-- name: findByUser :many
+const deleteTodo = `-- name: DeleteTodo :exec
+delete from todo where id = $1
+`
+
+func (q *Queries) DeleteTodo(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteTodo, id)
+	return err
+}
+
+const findByUser = `-- name: FindByUser :many
 SELECT id, name, owner, status, created_at, updated_at FROM todo where owner = $1
 `
 
-func (q *Queries) findByUser(ctx context.Context, owner uuid.UUID) ([]Todo, error) {
+func (q *Queries) FindByUser(ctx context.Context, owner uuid.UUID) ([]Todo, error) {
 	rows, err := q.db.QueryContext(ctx, findByUser, owner)
 	if err != nil {
 		return nil, err
@@ -77,4 +86,22 @@ func (q *Queries) findByUser(ctx context.Context, owner uuid.UUID) ([]Todo, erro
 		return nil, err
 	}
 	return items, nil
+}
+
+const findTodoById = `-- name: FindTodoById :one
+SELECT id, name, owner, status, created_at, updated_at FROM todo where id = $1
+`
+
+func (q *Queries) FindTodoById(ctx context.Context, id uuid.UUID) (Todo, error) {
+	row := q.db.QueryRowContext(ctx, findTodoById, id)
+	var i Todo
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Owner,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
