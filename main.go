@@ -33,11 +33,17 @@ func main() {
 		utils.RenderTemplate(writer, nil, "template/index.html")
 	})
 
+	mainRouter.Get("/home", config.Middleware(config.HomePage))
+
 	mainRouter.Get("/login", func(writer http.ResponseWriter, request *http.Request) {
 		utils.RenderTemplate(writer, nil, "template/login.html")
 	})
+	mainRouter.Post("/login", config.PostLogin())
 
-	mainRouter.Get("/home", config.Middleware(config.HomePage))
+	mainRouter.Post("/register", config.CreateUser())
+	mainRouter.Get("/register", func(writer http.ResponseWriter, request *http.Request) {
+		utils.RenderTemplate(writer, nil, "template/register.html")
+	})
 	server := http.Server{
 		Handler: mainRouter,
 		Addr:    fmt.Sprintf(":%v", port),

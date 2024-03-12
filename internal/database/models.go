@@ -33,5 +33,5 @@ type Todo struct {
 type User struct {
 	ID       uuid.UUID
 	Username string
-	Password sql.NullString
+	Password string
 }
