@@ -52,6 +52,8 @@ func main() {
 	mainRouter.Get("/todo/{todoId}", config.Middleware(config.GetTODO))
 
 	mainRouter.Post("/task", config.Middleware(config.CreateTask))
+	mainRouter.Delete("/task/{taskId}", config.Middleware(config.DeleteTask))
+	mainRouter.Put("/task/{taskId}", config.Middleware(config.UpdateStatus))
 	server := http.Server{
 		Handler: mainRouter,
 		Addr:    fmt.Sprintf(":%v", port),

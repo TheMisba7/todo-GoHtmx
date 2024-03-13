@@ -11,3 +11,6 @@ SELECT * FROM task where id = $1;
 
 -- name: DeleteTask :exec
 delete from task where id = $1;
+
+-- name: UpdateTaskStatus :exec
+update task set status = $1 where id = $2;

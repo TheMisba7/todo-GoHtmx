@@ -2,7 +2,7 @@
     <h4>{{.Name}}</h4>
     <form hx-post="/task" hx-target="#todoDetails">
         <label>
-            <input name="taskName" type="text">
+            <input name="taskName" type="text" required>
             <input name="todoId" type="text" hidden="hidden" value="{{.Id}}">
         </label>
         <label>
@@ -22,9 +22,23 @@
         {{range .Tasks}}
         <tr>
             <td>{{.Name}}</td>
-            <td>{{.CreatedAt}}</td>
-            <td>{{.Status}}</td>
-            <td>change status | Delete</td>
+            <td>{{.CreateAtStr}}</td>
+            <td>
+                <label>
+                    <select name="status" hx-put="/task/{{.Id}}">
+                        <option  {{if eq .Status 0}}selected{{end}} value="0">PENDING</option>
+                        <option  {{if eq .Status 1}}selected{{end}} value="1">IN PROGRESS</option>
+                        <option  {{if eq .Status 2}}selected{{end}} value="2">DONE</option>
+                    </select>
+                </label>
+            </td>
+            <td>
+                <button
+                        hx-delete="/task/{{.Id}}"
+                        hx-confirm="Are you sure you wish to delete this task?"
+                        hx-target="#todoDetails">Delete
+                </button>
+            </td>
         </tr>
         {{end}}
         </tbody>

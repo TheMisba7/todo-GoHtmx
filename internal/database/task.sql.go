@@ -112,3 +112,17 @@ func (q *Queries) GetTasks(ctx context.Context, todoID uuid.UUID) ([]Task, error
 	}
 	return items, nil
 }
+
+const updateTaskStatus = `-- name: UpdateTaskStatus :exec
+update task set status = $1 where id = $2
+`
+
+type UpdateTaskStatusParams struct {
+	Status int32
+	ID     uuid.UUID
+}
+
+func (q *Queries) UpdateTaskStatus(ctx context.Context, arg UpdateTaskStatusParams) error {
+	_, err := q.db.ExecContext(ctx, updateTaskStatus, arg.Status, arg.ID)
+	return err
+}

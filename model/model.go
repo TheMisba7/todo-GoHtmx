@@ -12,14 +12,16 @@ type User struct {
 }
 
 type Task struct {
-	Id        uuid.UUID
-	Name      string
-	StartDate time.Time
-	EndDate   time.Time
-	Status    int8 // 0 pending, 1 progress, 2 done
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	TodoId    uuid.UUID // reference to a Todo that this task belongs to
+	Id           uuid.UUID
+	Name         string
+	StartDate    time.Time
+	EndDate      time.Time
+	Status       int8 // 0 pending, 1 progress, 2 done
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	CreateAtStr  string
+	UpdatedAtStr string
+	TodoId       uuid.UUID // reference to a Todo that this task belongs to
 }
 
 type Todo struct {

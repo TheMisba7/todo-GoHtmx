@@ -13,16 +13,16 @@ type Config struct {
 
 type authedHandler func(http.ResponseWriter, *http.Request, database.User)
 
-func (config *Config) HomePage(writer http.ResponseWriter, request *http.Request, user database.User) {
-	todos, _ := config.DB.FindByUser(request.Context(), user.ID)
+func (cfg *Config) HomePage(writer http.ResponseWriter, request *http.Request, user database.User) {
+	todos, _ := cfg.DB.FindByUser(request.Context(), user.ID)
 	utils.RenderTemplate(writer, todos, "template/home.html")
 }
 
-func (config *Config) PostLogin() http.HandlerFunc {
+func (cfg *Config) PostLogin() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		username := request.FormValue("username")
 		password := request.FormValue("password")
-		user, err := config.DB.GetUser(request.Context(), username)
+		user, err := cfg.DB.GetUser(request.Context(), username)
 		if err != nil {
 			panic(err)
 		}
@@ -34,7 +34,7 @@ func (config *Config) PostLogin() http.HandlerFunc {
 	}
 }
 
-func (config *Config) CreateUser() http.HandlerFunc {
+func (cfg *Config) CreateUser() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		username := request.FormValue("username")
 		password := request.FormValue("password")
@@ -43,7 +43,7 @@ func (config *Config) CreateUser() http.HandlerFunc {
 			Username: username,
 			Password: utils.HashPassword(password),
 		}
-		user, err := config.DB.CreateUser(request.Context(), userParams)
+		user, err := cfg.DB.CreateUser(request.Context(), userParams)
 		if err != nil {
 			panic(err)
 		}
@@ -52,7 +52,7 @@ func (config *Config) CreateUser() http.HandlerFunc {
 	}
 }
 
-func (config *Config) Middleware(next authedHandler) http.HandlerFunc {
+func (cfg *Config) Middleware(next authedHandler) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		cookie, err := request.Cookie("userId")
 		if err != nil {
@@ -61,7 +61,7 @@ func (config *Config) Middleware(next authedHandler) http.HandlerFunc {
 			return
 		}
 
-		userById, err := config.DB.GetUserById(request.Context(), uuid.MustParse(cookie.Value))
+		userById, err := cfg.DB.GetUserById(request.Context(), uuid.MustParse(cookie.Value))
 		if err != nil {
 			panic(err)
 		}

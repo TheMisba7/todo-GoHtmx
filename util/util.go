@@ -5,6 +5,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"net/http"
+	"strconv"
+	"time"
 	"todo/internal/database"
 	"todo/model"
 )
@@ -39,13 +41,14 @@ func MapManyTasksFromDB(tasks []database.Task) []model.Task {
 }
 func MapOneTaskFromDB(task database.Task) model.Task {
 	return model.Task{
-		Name:      task.Name.String,
-		CreatedAt: task.CreatedAt.Time,
-		UpdatedAt: task.UpdatedAt.Time,
-		TodoId:    task.TodoID,
-		Status:    int8(task.Status),
-		StartDate: task.StartDate.Time,
-		EndDate:   task.EndDate.Time,
+		Id:           task.ID,
+		Name:         task.Name.String,
+		CreateAtStr:  task.CreatedAt.Time.Format(time.DateTime),
+		UpdatedAtStr: task.UpdatedAt.Time.Format(time.DateTime),
+		TodoId:       task.TodoID,
+		Status:       int8(task.Status),
+		StartDate:    task.StartDate.Time,
+		EndDate:      task.EndDate.Time,
 	}
 }
 
@@ -57,4 +60,9 @@ func MapOneTodoFromDB(todo database.Todo) model.Todo {
 		Id:        todo.ID,
 		Owner:     todo.Owner,
 	}
+}
+
+func ToInt32(str string) int32 {
+	atoi, _ := strconv.Atoi(str)
+	return int32(atoi)
 }

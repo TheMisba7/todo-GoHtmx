@@ -36,7 +36,7 @@ func (cfg *Config) CreateTask(writer http.ResponseWriter, request *http.Request,
 	utils.RenderTemplate(writer, modelTodo, "template/todo-details.html")
 }
 
-func (cfg *Config) deleteTask(writer http.ResponseWriter, request *http.Request, currentUser database.User) {
+func (cfg *Config) DeleteTask(writer http.ResponseWriter, request *http.Request, currentUser database.User) {
 	taskId := chi.URLParam(request, "taskId")
 	task, err := cfg.DB.GetTaskById(request.Context(), uuid.MustParse(taskId))
 	if err != nil {
@@ -47,9 +47,29 @@ func (cfg *Config) deleteTask(writer http.ResponseWriter, request *http.Request,
 		panic(err)
 	}
 
+	writer.WriteHeader(200)
 	todo, _ := cfg.DB.FindTodoById(request.Context(), task.TodoID)
 	tasks, _ := cfg.DB.GetTasks(request.Context(), todo.ID)
 	modelTodo := utils.MapOneTodoFromDB(todo)
 	modelTodo.Tasks = utils.MapManyTasksFromDB(tasks)
-	utils.RenderTemplate(writer, todo, "template/todo-details.html")
+	utils.RenderTemplate(writer, modelTodo, "template/todo-details.html")
+}
+
+func (cfg *Config) UpdateStatus(writer http.ResponseWriter, request *http.Request, currentUser database.User) {
+	taskId := chi.URLParam(request, "taskId")
+	status := request.URL.Query().Get("status")
+	taskById, _ := cfg.DB.GetTaskById(request.Context(), uuid.MustParse(taskId))
+
+	cfg.DB.UpdateTaskStatus(request.Context(),
+		database.UpdateTaskStatusParams{
+			Status: utils.ToInt32(status),
+			ID:     taskById.ID,
+		})
+
+	writer.WriteHeader(200)
+	todo, _ := cfg.DB.FindTodoById(request.Context(), taskById.TodoID)
+	tasks, _ := cfg.DB.GetTasks(request.Context(), todo.ID)
+	modelTodo := utils.MapOneTodoFromDB(todo)
+	modelTodo.Tasks = utils.MapManyTasksFromDB(tasks)
+	utils.RenderTemplate(writer, modelTodo, "template/todo-details.html")
 }
